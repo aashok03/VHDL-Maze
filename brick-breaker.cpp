@@ -32,9 +32,8 @@ struct State {
         }
         State() { reset(); }
 
-#define MAX(x,y) x < y ? y : x; // y if x < y
         void update(int input) { // -1 => LEFT, 1 => RIGHT, 0 => WAIT
-
+                
                 // player move
                 if (input == -1)
                         paddle = std::max(paddle-PADDLE_SPEED, 0);
@@ -46,7 +45,7 @@ struct State {
                 ball_p[1] += ball_v[1];
                 
                 // horizontal collision
-                if (ball_p[0] < 0 or ball_p[0] > WIDTH)
+                if (ball_p[0] <= 0 or ball_p[0] >= WIDTH)
                         ball_v[0] = -ball_v[0]; 
 
                 // top collision
@@ -60,6 +59,7 @@ struct State {
                                 ball_v[1] = -ball_v[1];
                         else {
                                 reset(); // game over
+                                assert(false && "END");
                                 return;
                         }                        
                 }
@@ -73,15 +73,14 @@ struct State {
                         x_interval[0] = (i % BRICK_COLS) * BRICK_SIZE;
                         x_interval[1] = x_interval[0] + BRICK_SIZE;
 
-                        y_interval[0] = (i / BRICK_COLS) * BRICK_SIZE + BRICK_MIN_HEIGHT;
+                        y_interval[0] = (i / BRICK_COLS) * BRICK_SIZE; // + BRICK_MIN_HEIGHT;
                         y_interval[1] = y_interval[0] + BRICK_SIZE;
 
                         if (ball_p[0] < x_interval[0] or
                             ball_p[0] > x_interval[1] or
                             ball_p[1] < y_interval[0] or
                             ball_p[1] > y_interval[1])
-                                continue; // no collision
-                        
+                                continue; // no collision                        
                         else {
                                 bricks[i] = false;
 
@@ -110,7 +109,7 @@ struct State {
                 for (int r = 0; r < HEIGHT/UNIT; ++r) {
                         std::cout << '|';
                         for (int c = 0; c < WIDTH/UNIT; ++c) {
-                                
+
                                 if (r < 8 and bricks[(BRICK_ROWS-r-1)*BRICK_COLS+c]) {
                                         std::cout << "x ";
                                 } else if (ball_p[0] >= c*UNIT      and
