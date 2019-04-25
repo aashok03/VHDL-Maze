@@ -4,13 +4,14 @@ use IEEE.numeric_std.all;
 
 entity GAME is
   port(
-	  L : in std_logic;
-	  R : in std_logic;
-	  clk : in std_logic;
-	  ball_x : out unsigned (9 downto 0);
-	  ball_y : out unsigned (9 downto 0);
-          lost   : out std_logic;
-	  --paddle_x : out unsigned (9 downto 0);
+	  L      : in std_logic;
+	  R      : in std_logic;
+	  clk    : in std_logic;
+	  ball_x_position : out integer (16 downto 0);
+	  ball_y_position : out integer (16 downto 0);
+          paddle_position : out integer (16 downto 0);
+          game_over       : out std_logic;
+
 	  --ball_array : out unsigned(99 downto 0);
   );    
 end;
@@ -22,26 +23,26 @@ architecture GAME_ARCH of GAME is
 
   
   -- Every constant must be power of 2
-  constant UNIT   : unsigned (16 downto 0)  := 1024;
+  constant UNIT   : integer (16 downto 0)  := 17d"1024";
   
-  constant WIDTH  : unsigned (16 downto 0)  := 32*UNIT;
-  constant HEIGHT : unsigned (16 downto 0)  := 16*UNIT;
+  constant WIDTH  : integer (16 downto 0)  := 17d"32" * UNIT;
+  constant HEIGHT : integer (16 downto 0)  := 17d"16" * UNIT;
   
-  constant PADDLE_WIDTH : unsigned (16 downto 0)  := UNIT*4;
-  constant PADDLE_SPEED : unsigned (16 downto 0)  := UNIT;
+  constant PADDLE_WIDTH : integer (16 downto 0)  := 17d"4" * UNIT;
+  constant PADDLE_SPEED : integer (16 downto 0)  := 1; -- 
   
-  constant BRICK_ROWS : unsigned (16 downto 0)  := 8;
-  constant BRICK_COLS : unsigned (16 downto 0)  := 32;
-  constant BRICK_SIZE : unsigned (16 downto 0)  := WIDTH/BRICK_COLS;
+  constant BRICK_ROWS : integer (16 downto 0)  := 8;
+  constant BRICK_COLS : integer (16 downto 0)  := 32;
+  constant BRICK_SIZE : integer (16 downto 0)  := WIDTH/BRICK_COLS;
 
   signal L : std_logic := '0';
   signal R : std_logic := '1';
   
-  signal paddle  : unsigned (16 downto 0) := 0;
-  signal ball_x  : unsigned (16 downto 0) := 0;
-  signal ball_y  : unsigned (16 downto 0) := HEIGHT; -- y=0 is top
-  signal ball_vx : unsigned (16 downto 0) :=  UNIT; -- MUST LOWER SIGNIFICANTLY
-  signal ball_vy : unsigned (16 downto 0) := -UNIT; -- MUST LOWER SIGNIFICANTLY
+  signal paddle  : integer (16 downto 0) := 0;
+  signal ball_x  : integer (16 downto 0) := 0;
+  signal ball_y  : integer (16 downto 0) := HEIGHT; -- y=0 is top
+  signal ball_vx : integer (16 downto 0) :=  UNIT; -- MUST LOWER SIGNIFICANTLY
+  signal ball_vy : integer (16 downto 0) := -UNIT; -- MUST LOWER SIGNIFICANTLY
 
 begin
   process (clk) is
@@ -70,9 +71,14 @@ begin
       end if;
 
       -- LOST CONDITION
-      lost <= '1' when ball_y >= HEIGHT and
+      game_over <= '1' when ball_y >= HEIGHT and
               (ball_x < paddle or ball_x > paddle+PADDLE_WIDTH) else '0';
-      
+
+      -- MAPPING TO OUTPUTS
+      ball_x_position <= ball_x;
+      ball_y_position <= ball_y;
+      paddle_position <= paddle;
+
     end if;
   end process;
 end;
