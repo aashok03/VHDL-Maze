@@ -22,8 +22,8 @@ signal RGB : std_logic_vector (5 downto 0);
 
 begin
 
-RGB <= "111111" when (count_horz < (paddle_x + 40) and count_horz > (paddle_x - 40) and count_vert < 455 and count_vert > 445) --The paddle
-           or (count_horz < 63 or count_horz > 576 or count_vert < 9) --The border
+RGB <= "111111" when (count_horz < (paddle_x + 81) and count_horz > paddle_x - 1 and count_vert < 456 and count_vert > 445) --The paddle
+                     or (count_horz < 63 or count_horz > 574 or count_vert < 9) --The border
 					 or ( (count_horz = ball_x + 4 or count_horz = ball_x - 4) and (count_vert < ball_y + 2 and count_vert > ball_y - 2) ) --Ball top/bottom row 1
 					 or ( (count_horz = ball_x + 3 or count_horz = ball_x - 3) and (count_vert < ball_y + 3 and count_vert > ball_y - 3) ) --Ball top/bottom row 2
 					 or ( (count_horz = ball_x + 2 or count_horz = ball_x - 2) and (count_vert < ball_y + 4 and count_vert > ball_y - 4) ) --Ball top/bottom row 3
@@ -32,3 +32,4 @@ RGB <= "111111" when (count_horz < (paddle_x + 40) and count_horz > (paddle_x - 
 
 RGB_pattern <= RGB;
 end synth;
+
