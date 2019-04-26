@@ -4,31 +4,33 @@
 
 /* 32 x 8 */
 struct State {
-        static const int UNIT = 1024;
+        static const int PIXEL = 512; // size of pixel
+        static const int BLOCK = 32 * PIXEL;
         
-        static const int WIDTH  = 32 * UNIT;
-        static const int HEIGHT = 16 * UNIT;
+        static const int WIDTH  = 512 * PIXEL; // 16 blocks
+        static const int HEIGHT = 480 * PIXEL; // 15 blocks
         
-        static const int PADDLE_WIDTH = UNIT*4;
-        static const int PADDLE_SPEED = UNIT/2;
+        static const int PADDLE_WIDTH = 50 * PIXEL;
+        static const int PADDLE_SPEED = 50 * PIXEL; // CHANGE THIS
                         
-        static const int BRICK_ROWS = 8;
-        static const int BRICK_COLS = 32;
-        static const int BRICK_SIZE = WIDTH/BRICK_COLS;
-        static const int BRICK_MIN_HEIGHT = HEIGHT/2;
+        static const int BLOCK_ROWS = 5;
+        static const int BLOCK_COLS = 16;
+        static const int BLOCK_NUM  = BLOCK_ROWS * BLOCK_COLS;
+
+        static_assert(WIDTH/BLOCK_COLS == BLOCK, "INVARIANT INVALID");
         
-        bool bricks[BRICK_ROWS * BRICK_COLS];
+        bool bricks[BLOCK_NUM];
         int paddle;
         int ball_p[2];
         int ball_v[2];
 
         void reset() {
-                std::fill_n(bricks, BRICK_ROWS*BRICK_COLS, false);
+                std::fill_n(bricks, BLOCK_NUM, false);
                 paddle = WIDTH/2;
                 ball_p[0] = 3*WIDTH/4;
                 ball_p[1] = HEIGHT-1;
-                ball_v[0] = UNIT;
-                ball_v[1] = -UNIT;
+                ball_v[0] =  BLOCK; // CHANGE THIS
+                ball_v[1] = -BLOCK; // CHANGE THIS
         }
         State() { reset(); }
 
@@ -61,29 +63,28 @@ struct State {
                         if (ball_p[0] >= paddle and
                             ball_p[0] <= paddle + PADDLE_WIDTH) {
                                 ball_v[1] = -ball_v[1];
-                                std::cerr << "SUCCESS SUCCESS SUCCESS\n";
                         }
                         else {
-                                std::cerr << "FAIL FAIL FAIL FAIL FAIL FAIL\n";
-                                reset(); // game over
                                 assert(false && "END");
+                                
+                                reset(); // game over
                                 return;
                         }                        
                 }
 
-                // for (int i = 0; i < BRICK_ROWS * BRICK_COLS; ++i) {
+                // for (int i = 0; i < BLOCK_ROWS * BLOCK_COLS; ++i) {
 
                 //         // constructing brick intervals
                 //         int x_interval[2];
                 //         int y_interval[2];
                         
-                //         x_interval[0] = (i % BRICK_COLS) * BRICK_SIZE;
-                //         x_interval[1] = x_interval[0] + BRICK_SIZE;
+                //         x_interval[0] = (i % BLOCK_COLS) * BLOCK_SIZE;
+                //         x_interval[1] = x_interval[0] + BLOCK_SIZE;
 
-                //         y_interval[0] = (i / BRICK_COLS) * BRICK_SIZE; // + BRICK_MIN_HEIGHT;
-                //         y_interval[1] = y_interval[0] + BRICK_SIZE;
+                //         y_interval[0] = (i / BLOCK_COLS) * BLOCK_SIZE;
+                //         y_interval[1] = y_interval[0] + BLOCK_SIZE;
 
-                //         std::cerr << "CURRENT BRICK : (" << x_interval[0]/UNIT << '-' << x_interval[1]/UNIT
+                //         std::cerr << "CURRENT BLOCK : (" << x_interval[0]/UNIT << '-' << x_interval[1]/UNIT
                 //                   << ", " << y_interval[0]/UNIT << '-' << y_interval[1]/UNIT << ")\n";
                         
                         
@@ -94,7 +95,7 @@ struct State {
                 //                 continue; // no collision                        
                 //         else {
                 //                 std::cerr << "BALL IS AT (" << ball_p[0]/UNIT << ", " << ball_p[1]/UNIT << ")\n";
-                //                 std::cerr << "BRICK COLLISION AT " << x_interval[0]/UNIT << " and " << y_interval[0]/UNIT << std::endl;
+                //                 std::cerr << "BLOCK COLLISION AT " << x_interval[0]/UNIT << " and " << y_interval[0]/UNIT << std::endl;
                 //                 bricks[i] = false;
 
                 //                 // center of block
@@ -114,21 +115,20 @@ struct State {
 
         void render() { // DISCARD THIS -- WILL BE REPLACED BY VGA
 
-                std::cout << "POSITION : " << ball_p[0]/UNIT << ", " << ball_p[1]/UNIT << std::endl;
-                for (int i = 0; i < WIDTH/UNIT; ++i)
+                std::cout << "POSITION : " << ball_p[0]/PIXEL << ", " << ball_p[1]/PIXEL << std::endl;
+                for (int i = 0; i < WIDTH/BLOCK; ++i)
                         std::cout << "--";
                 std::cout << '\n';
 
-                for (int r = 0; r < HEIGHT/BRICK_SIZE; ++r) {
+                for (int r = 0; r < HEIGHT/BLOCK; ++r) {
                         std::cout << '|';
-                        for (int c = 0; c < WIDTH/UNIT; ++c) {
-
-                                if (r < 8 and bricks[(BRICK_ROWS-r-1)*BRICK_COLS+c]) {
+                        for (int c = 0; c < WIDTH/BLOCK; ++c) {
+                                if (r < BLOCK_ROWS and bricks[(BLOCK_ROWS-r-1)*BLOCK_COLS+c]) {
                                         std::cout << "x ";
-                                } else if (ball_p[0] >= c*UNIT      and
-                                          (ball_p[0] < (c+1)*UNIT)  and
-                                           ball_p[1] >= r*UNIT      and
-                                           ball_p[1] < (r+1)*UNIT)
+                                } else if (ball_p[0] >= c*BLOCK      and
+                                          (ball_p[0] < (c+1)*BLOCK)  and
+                                           ball_p[1] >= r*BLOCK      and
+                                           ball_p[1] < (r+1)*BLOCK)
                                         std::cout << "o ";                                
                                 else {
                                         std::cout << "  ";
@@ -136,17 +136,15 @@ struct State {
                         }
                         std::cout << "|\n";
                 }
-
-                int count(0), count1(0), count2(0);                
-                for (int i = 0; i < WIDTH; i += UNIT) {
-                        ++count;
+           
+                for (int i = 0; i < WIDTH; i += BLOCK) {
                         if (i > paddle and i < paddle+PADDLE_WIDTH)
                                 std::cout << "--";
                         else    std::cout << "  ";
                         
                 }
                 std::cout << '\n';
-                std::cout << "PADDLE : " << (float)paddle/UNIT << std::endl;
+                std::cout << "PADDLE : " << (float)paddle/BLOCK << std::endl;
         }
 };
 
