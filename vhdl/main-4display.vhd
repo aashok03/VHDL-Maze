@@ -10,7 +10,9 @@ entity topLevel is
 			right_in : in std_logic;
 			sync_horzC : out std_logic;
 			sync_vertC : out std_logic;
-            RGB_pat : out std_logic_vector (5 downto 0)
+            RGB_pat : out std_logic_vector (5 downto 0);
+			LO : out std_logic;
+			RO : out std_logic
 		   
            );
 end topLevel;
@@ -49,18 +51,10 @@ Port(
     count_horz : in unsigned  (9 downto 0);
     count_vert : in unsigned  (9 downto 0);
 	paddle_x : in unsigned (9 downto 0);
+	ball_x : in unsigned (9 downto 0);
+	ball_y : in unsigned (9 downto 0);
     RGB_pattern : out std_logic_vector (5 downto 0)
     );
-end component;
-
-component move_paddle is
-	port(
-	  clk : in std_logic;
-	  paddle_x_i : in unsigned (9 downto 0) := to_unsigned(10, 200);
-	  L : in std_logic;
-	  R : in std_logic;
-	  paddle_x_o : out unsigned (9 downto 0)
-	);
 end component;
 
 signal clock : std_logic;
@@ -72,15 +66,16 @@ signal vert_count : unsigned (9 downto 0);
 signal sync_horz : std_logic;
 signal sync_vert : std_logic;
 signal RGB : std_logic_vector (5 downto 0);
-signal paddle_x_cur : unsigned (9 downto 0);
 
 begin
 
 clock_to_pll : HSOSC port map (CLKHFPU => '1', CLKHFEN => '1', CLKHF => clock);
 pll_from_clock : pll port map ( clock, '1', clk, test);
 vga_to_pattern : VGA_design port map (clk, valid_out, horz_count, vert_count, sync_horz, sync_vert);
-pattern_to_vga_cable : pattern port map (valid_out, horz_count, vert_count, to_unsigned(320, 10), RGB);
-paddle_mover : move_paddle port map (clk, paddle_x_cur, left_in, right_in, paddle_x_cur);
+pattern_to_vga_cable : pattern port map (valid_out, horz_count, vert_count, to_unsigned(100, 10), to_unsigned(150, 10), to_unsigned(150, 10), RGB);
+
+LO <= left_in;
+RO <= right_in;
 
 RGB_pat <= RGB;
 sync_horzC <= sync_horz;
