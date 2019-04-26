@@ -25,3 +25,5 @@ Paddle: 80x10 rectangle
 Screen: 512x480
         -The screen starts at pixel column 63 and ends at pixel column 574
         -The screen starts at pixel row 9 and ends at the bottom of the screen, at row 480
+
+Bricks: TBD
