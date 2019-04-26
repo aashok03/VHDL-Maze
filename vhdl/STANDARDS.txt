@@ -1,0 +1,27 @@
+This file is to set a couple of standards that will be helpful as we build the game (specifically 
+relating to the environment of the game)
+
+(All units are in pixels)
+
+Ball: 9x9 in pyramid shape in order to be 'circular' as seen below (each 'x' is a pixel)
+
+       x x x        row of 3 pixels
+     x x x x x      row of 5 pixels
+   x x x x x x x    row of 7 pixels
+ x x x x x x x x x  row of 9 pixels
+ x x x x x x x x x  row of 9 pixels
+ x x x x x x x x x  row of 9 pixels
+   x x x x x x x    row of 7 pixels
+     x x x x x      row of 5 pixels
+       x x x        row of 3 pixels
+       (naming is based off of the names used in the pattern module)
+       -ball_x: The x coordinate for the center of the ball
+       -ball_y: The y coordinate for the center of the ball
+
+Paddle: 80x10 rectangle
+        -paddle_x: the x coordinate for the first column of pixels for the paddle
+        -y values: The paddle's center row is 450 with its upper row being 455
+
+Screen: 512x480
+        -The screen starts at pixel column 63 and ends at pixel column 574
+        -The screen starts at pixel row 9 and ends at the bottom of the screen, at row 480
