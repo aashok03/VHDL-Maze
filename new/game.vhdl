@@ -60,13 +60,13 @@ begin
 			
 
 			
-	      if 0 > ball_x_position - 2016 then --63px
+	      if 0 > ball_x_pos - 2016 then --63px
 			ball_vx <= (-ball_vx) when ball_vx < 0 else ball_vx;
 		  elsif ball_x_pos > 18368 then --574px
 			ball_vx <= (-ball_vx) when ball_vx > 0 else ball_vx;
 		  end if;
 					
-		  if 0 > ball_y_position - 288 then --9px
+		  if 0 > ball_y_pos - 288 then --9px
 			ball_vy <= (-ball_vy) when ball_vy < 0 else ball_vy;
 		  elsif ball_y_pos > 14592 then --456px
 			ball_vy <= (-ball_vy) when ball_vy > 0 else ball_vy;
