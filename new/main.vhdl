@@ -1,5 +1,3 @@
---Main module, as working with a static ball and paddle (no bricks)
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.numeric_std.ALL;
@@ -65,7 +63,7 @@ architecture synth of TOP is
       tick   : in std_logic;
       ball_x_position : out unsigned (9 downto 0);
       ball_y_position : out unsigned (9 downto 0);
-      paddle_pos      : out unsigned (9 downto 0)
+      paddle_position : out unsigned (9 downto 0)
     );
   end component;
 
@@ -82,7 +80,7 @@ architecture synth of TOP is
   signal ball_y_sig : unsigned (9 downto 0);
   signal paddle_sig : unsigned (9 downto 0);
 
-  signal RGB_sig : unsigned (5 downto 0);
+  signal RGB_sig : std_logic_vector (5 downto 0);
   
 begin
 
