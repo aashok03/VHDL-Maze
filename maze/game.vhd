@@ -5,15 +5,15 @@ use ieee.math_real.all;
 
 entity GAME is
   port(
-    L1      : in std_logic;
-    R1      : in std_logic;
-    U1	  : in std_logic;
-    D1	  : in std_logic;
+    L1 : in std_logic;
+    R1 : in std_logic;
+    U1 : in std_logic;
+    D1 : in std_logic;
     
-    L2      : in std_logic;
-    R2      : in std_logic;
-    U2	  : in std_logic;
-    D2	  : in std_logic;
+    L2 : in std_logic;
+    R2 : in std_logic;
+    U2 : in std_logic;
+    D2 : in std_logic;
     
     tick    : in std_logic;
     paddle_position_x_1 : out unsigned (9 downto 0);
@@ -30,7 +30,7 @@ architecture synth of GAME is
   signal paddley2     : unsigned (14 downto 0);
   
   signal little_count  : unsigned (11 downto 0) := 12d"0";
-  signal big_count     : unsigned (7 downto 0) := 8d"0";
+  signal big_count     : unsigned (7  downto 0)  := 8d"0";
   signal once          : std_logic := '0';
 begin
 
