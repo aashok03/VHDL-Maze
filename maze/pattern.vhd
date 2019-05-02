@@ -4,9 +4,9 @@ use IEEE.numeric_std.all;
 
 entity PATTERN is
   port(
-    valid : in std_logic;
-    row   : in unsigned (9 downto 0);
-    col   : in unsigned (9 downto 0);    
+    valid    : in std_logic;
+    row      : in unsigned (9 downto 0);
+    col      : in unsigned (9 downto 0);    
     paddlex1 : in unsigned (9 downto 0);
     paddley1 : in unsigned (9 downto 0);
     paddlex2 : in unsigned (9 downto 0);
