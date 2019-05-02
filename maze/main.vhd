@@ -25,7 +25,7 @@ architecture synth of TOP is
     port(
       CLKHFPU : in std_logic := '1'; -- Set to 1 to power up
       CLKHFEN : in std_logic := '1'; -- Set to 1 to enable output
-      CLKHF : out std_logic := 'X'); -- Clock output
+      CLKHF   : out std_logic := 'X'); -- Clock output
   end component;
 
   component pll is
@@ -50,14 +50,14 @@ architecture synth of TOP is
 
   component PATTERN is
     port(
-      valid : in std_logic;
-      row   : in unsigned (9 downto 0);
-      col   : in unsigned (9 downto 0);      
+      valid    : in std_logic;
+      row      : in unsigned (9 downto 0);
+      col      : in unsigned (9 downto 0);      
       paddlex1 : in unsigned (9 downto 0);
       paddley1 : in unsigned (9 downto 0); 
       paddlex2 : in unsigned (9 downto 0);
       paddley2 : in unsigned (9 downto 0);      	  
-      RGB    : out std_logic_vector (5 downto 0)      
+      RGB      : out std_logic_vector (5 downto 0)      
     );
   end component;
 
@@ -108,7 +108,9 @@ begin
                                 CLOCK, paddle_x1, paddle_y1, paddle_x2, paddle_y2);
   
   vga_inst     : VGA port map(CLOCK, valid_sig, row_sig, col_sig, HSYNC_sig, VSYNC_sig); -- 1 in 5 out
-  pattern_inst : PATTERN port map(valid_sig, row_sig, col_sig, paddle_x1, paddle_y1, paddle_x2, paddle_y2, RGB_sig); -- 6 in 1 out
+  pattern_inst : PATTERN port map(valid_sig, row_sig, col_sig, paddle_x1, paddle_y1, 
+                                                               paddle_x2, paddle_y2, 
+                                  RGB_sig); -- 6 in 1 out
 
   HSYNC_OUT <= HSYNC_sig;
   VSYNC_out <= VSYNC_sig;
